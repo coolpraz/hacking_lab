@@ -514,7 +514,7 @@ services:
 
   # OWASP WrongSecrets - Secrets management vulnerabilities
   wrongsecrets:
-    image: OWASP/wrongsecrets:latest
+    image: ghcr.io/owasp/wrongsecrets/wrongsecrets-master:latest-master
     container_name: owasp_wrongsecrets
     ports:
       - "8099:8080"
