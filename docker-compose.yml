@@ -415,10 +415,41 @@ services:
 
   # Damn Vulnerable RESTaurant API
   dv_restaurant:
-    image: visma-prodsec/damn-vulnerable-restaurant-app
+    build: https://github.com/theowni/Damn-Vulnerable-RESTaurant-API-Game.git#main
     container_name: damn_vulnerable_restaurant
+    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 80 --workers 1"
     ports:
       - "8093:80"
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_SERVER=dv_restaurant_db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=restaurant
+    networks:
+      - hacking_lab
+    depends_on:
+      dv_restaurant_db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  dv_restaurant_db:
+    image: postgres:15.4-alpine
+    container_name: damn_vulnerable_restaurant_db
+    volumes:
+      - dv_restaurant_db_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=restaurant
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD", "sh", "-c", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      start_period: 5s
     networks:
       - hacking_lab
     restart: unless-stopped
@@ -599,3 +630,4 @@ volumes:
   linux_vuln_data:
   dvwa_db_data:
   hackazon_data:
+  dv_restaurant_db_data:
