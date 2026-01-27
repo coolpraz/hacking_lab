@@ -40,7 +40,7 @@ check_docker() {
         exit 1
     fi
 
-    if ! command -v docker-compose &> /dev/null; then
+    if ! command -v docker compose &> /dev/null; then
         print_error "Docker Compose is not installed. Please install Docker Compose first."
         exit 1
     fi
@@ -49,7 +49,7 @@ check_docker() {
 start_lab() {
     print_status "Starting Hacking Lab..."
     print_warning "Make sure you have at least 8GB RAM available!"
-    docker-compose up -d
+    docker compose up -d
     print_status "Lab started successfully!"
     print_status "Run './lab.sh status' to see running services"
     print_status "Run './lab.sh urls' to see all available URLs"
@@ -57,7 +57,7 @@ start_lab() {
 
 stop_lab() {
     print_status "Stopping Hacking Lab..."
-    docker-compose down
+    docker compose down
     print_status "Lab stopped successfully!"
 }
 
@@ -66,7 +66,7 @@ stop_lab_clean() {
     read -p "Are you sure? (yes/no): " confirm
     if [ "$confirm" = "yes" ]; then
         print_status "Stopping and cleaning Hacking Lab..."
-        docker-compose down -v
+        docker compose down -v
         docker system prune -f
         print_status "Lab cleaned successfully!"
     else
@@ -77,10 +77,10 @@ stop_lab_clean() {
 show_status() {
     print_status "Container Status:"
     echo ""
-    docker-compose ps
+    docker compose ps
     echo ""
     print_status "Resource Usage:"
-    docker stats --no-stream --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}" $(docker-compose ps -q)
+    docker stats --no-stream --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}" $(docker compose ps -q)
 }
 
 show_logs() {
@@ -91,7 +91,7 @@ show_logs() {
         exit 1
     fi
     print_status "Showing logs for $1 (Ctrl+C to exit)..."
-    docker-compose logs -f "$1"
+    docker compose logs -f "$1"
 }
 
 show_urls() {
@@ -157,7 +157,7 @@ restart_service() {
         exit 1
     fi
     print_status "Restarting $1..."
-    docker-compose restart "$1"
+    docker compose restart "$1"
     print_status "$1 restarted successfully!"
 }
 
@@ -169,14 +169,14 @@ shell_into() {
         exit 1
     fi
     print_status "Opening shell into $1..."
-    docker-compose exec "$1" /bin/bash || docker-compose exec "$1" /bin/sh
+    docker compose exec "$1" /bin/bash || docker compose exec "$1" /bin/sh
 }
 
 rebuild_lab() {
     print_status "Rebuilding Hacking Lab..."
-    docker-compose down
-    docker-compose build
-    docker-compose up -d
+    docker compose down
+    docker compose build
+    docker compose up -d
     print_status "Lab rebuilt successfully!"
 }
 
