@@ -1,0 +1,601 @@
+version: '3.8'
+
+services:
+  # ==================== WEB VULNERABILITIES ====================
+
+  # DVWA - Damn Vulnerable Web Application
+  dvwa:
+    image: vulnerables/web-dvwa
+    container_name: dvwa
+    ports:
+      - "8080:80"
+    environment:
+      - DB_SERVER=db
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # WebGoat - Java-based web application security lessons
+  webgoat:
+    image: webgoat/webgoat-v8
+    container_name: webgoat
+    ports:
+      - "8081:8080"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # WebWolf - WebGoat's companion
+  webwolf:
+    image: webgoat/webwolf
+    container_name: webwolf
+    ports:
+      - "9090:9090"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # bWAPP - buggy Web Application
+  bwapp:
+    image: raesene/bwapp
+    container_name: bwapp
+    ports:
+      - "8082:80"
+    environment:
+      - MYSQL_ROOT_PASSWORD=bug
+      - MYSQL_DATABASE=bwapp
+      - MYSQL_USER=bug
+      - MYSQL_PASSWORD=bug
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Mutillidae - OWASP vulnerabilities
+  mutillidae:
+    image: citizenstig/dvwa
+    container_name: mutillidae
+    ports:
+      - "8083:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Juice Shop - OWASP vulnerable Node.js app
+  juice-shop:
+    image: bkimminich/juice-shop
+    container_name: juice-shop
+    ports:
+      - "3000:3000"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== CMS VULNERABILITIES ====================
+
+  # WordPress with known vulnerabilities (older version)
+  wordpress:
+    image: wordpress:5.9-php7.4-apache
+    container_name: wordpress_vuln
+    ports:
+      - "8084:80"
+    environment:
+      - WORDPRESS_DB_HOST=wp_db
+      - WORDPRESS_DB_USER=wpuser
+      - WORDPRESS_DB_PASSWORD=wppassword
+      - WORDPRESS_DB_NAME=wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - hacking_lab
+    depends_on:
+      - wp_db
+    restart: unless-stopped
+
+  wp_db:
+    image: mysql:5.7
+    container_name: wordpress_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wpuser
+      - MYSQL_PASSWORD=wppassword
+    volumes:
+      - wp_db_data:/var/lib/mysql
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Joomla with vulnerabilities
+  joomla:
+    image: joomla:3.10-php7.4-apache
+    container_name: joomla_vuln
+    ports:
+      - "8085:80"
+    environment:
+      - JOOMLA_DB_HOST=joomla_db
+      - JOOMLA_DB_USER=joomla
+      - JOOMLA_DB_PASSWORD=joomla
+      - JOOMLA_DB_NAME=joomla
+    volumes:
+      - joomla_data:/var/www/html
+    networks:
+      - hacking_lab
+    depends_on:
+      - joomla_db
+    restart: unless-stopped
+
+  joomla_db:
+    image: mysql:5.7
+    container_name: joomla_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=joomla
+      - MYSQL_USER=joomla
+      - MYSQL_PASSWORD=joomla
+    volumes:
+      - joomla_db_data:/var/lib/mysql
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== NETWORK SERVICES ====================
+
+  # VSFTPD - Vulnerable FTP server (2.3.4 - backdoor)
+  vsftpd:
+    image: vulnerabilities/vsftpd
+    container_name: vsftpd_vuln
+    ports:
+      - "21:21"
+      - "20:20"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ProFTPD - Vulnerable FTP server
+  proftpd:
+    image: vulnerabilities/proftpd
+    container_name: proftpd_vuln
+    ports:
+      - "2121:21"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # VSFTPD with configuration issues
+  pure-ftpd:
+    image: vulnerabilities/pure-ftpd
+    container_name: pure_ftpd_vuln
+    ports:
+      - "2221:21"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Telnet server (insecure protocol)
+  telnet:
+    image: vulnerable/telnet
+    container_name: telnet_vuln
+    ports:
+      - "2323:23"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== SSH & REMOTE ACCESS ====================
+
+  # SSH with weak configurations
+  ssh_weak:
+    image: vulnerabilities/ssh
+    container_name: ssh_weak
+    ports:
+      - "2222:22"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== DATABASE SERVICES ====================
+
+  # MySQL with weak credentials
+  mysql_weak:
+    image: mysql:5.7
+    container_name: mysql_weak
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=testdb
+      - MYSQL_USER=testuser
+      - MYSQL_PASSWORD=password123
+    volumes:
+      - mysql_weak_data:/var/lib/mysql
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # PostgreSQL with weak credentials
+  postgres_weak:
+    image: postgres:13
+    container_name: postgres_weak
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=testdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_weak_data:/var/lib/postgresql/data
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # MongoDB with no auth
+  mongodb_no_auth:
+    image: mongo:4.4
+    container_name: mongodb_no_auth
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=testdb
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== SMB & FILE SHARING ====================
+
+  # Samba with configuration vulnerabilities
+  samba:
+    image: vulnerabilities/samba
+    container_name: samba_vuln
+    ports:
+      - "139:139"
+      - "445:445"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== EMAIL SERVICES ====================
+
+  # Vulnerable SMTP server
+  smtp:
+    image: vulnerabilities/smtp
+    container_name: smtp_vuln
+    ports:
+      - "25:25"
+      - "587:587"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== ADDITIONAL VULNERABLE SERVICES ====================
+
+  # Tomcat with manager access
+  tomcat:
+    image: tomcat:8.5-jdk8-openjdk
+    container_name: tomcat_vuln
+    ports:
+      - "8086:8080"
+    volumes:
+      - tomcat_data:/usr/local/tomcat/webapps
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Jenkins with default credentials
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins_vuln
+    ports:
+      - "8087:8080"
+    environment:
+      - JENKINS_ADMIN_ID=admin
+      - JENKINS_ADMIN_PASSWORD=admin
+    volumes:
+      - jenkins_data:/var/jenkins_home
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Redis with no auth
+  redis_no_auth:
+    image: redis:6.2
+    container_name: redis_no_auth
+    ports:
+      - "6379:6379"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ElasticSearch with default settings
+  elasticsearch:
+    image: elasticsearch:7.10.0
+    container_name: elasticsearch_vuln
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Grafana with default credentials
+  grafana:
+    image: grafana/grafana:7.5.0
+    container_name: grafana_vuln
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Apache Struts 2 (vulnerable to RCE)
+  struts2:
+    image: vulnerabilities/struts2
+    container_name: struts2_vuln
+    ports:
+      - "8088:8080"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== CUSTOM VULNERABLE MACHINES ====================
+
+  # Custom Linux box with multiple vulnerabilities
+  linux_vuln_box:
+    image: kalilinux/kali-rolling:latest
+    container_name: linux_vuln_box
+    ports:
+      - "2223:22"
+      - "8089:80"
+    volumes:
+      - linux_vuln_data:/root
+    networks:
+      - hacking_lab
+    command: /bin/bash -c "apt-get update && apt-get install -y openssh-server apache2 mysql-server && service ssh start && service apache2 start && tail -f /dev/null"
+    restart: unless-stopped
+
+  # DVWA database
+  db:
+    image: mysql:5.7
+    container_name: dvwa_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=dvwa
+      - MYSQL_DATABASE=dvwa
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=p@ssw0rd
+    volumes:
+      - dvwa_db_data:/var/lib/mysql
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== ADDITIONAL OWASP VULNERABLE APPS ====================
+
+  # OWASP VulnerableApp - Comprehensive vulnerable application
+  vulnerableapp:
+    image: blabla1337/owasp-vulnerableapp
+    container_name: owasp_vulnerableapp
+    ports:
+      - "8090:8080"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # SQLi-Labs - SQL Injection practice platform
+  sqli_labs:
+    image: c0debreaker/sqli-labs
+    container_name: sqli_labs
+    ports:
+      - "8091:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Damn Vulnerable GraphQL Application
+  dvga:
+    image: insticator/damn-vulnerable-graph-ql-app
+    container_name: damn_vulnerable_graphql
+    ports:
+      - "8092:5000"
+    environment:
+      - NODE_ENV=development
+      - DEBUG=dvga:*
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Damn Vulnerable RESTaurant API
+  dv_restaurant:
+    image: visma-prodsec/damn-vulnerable-restaurant-app
+    container_name: damn_vulnerable_restaurant
+    ports:
+      - "8093:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Pixi - Vulnerable XSS application
+  pixi:
+    image: pykse/pixi
+    container_name: pixi_xss
+    ports:
+      - "8094:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # PyGoat - Python vulnerabilities
+  pygoat:
+    image: d1rkx/pygoat
+    container_name: pygoat
+    ports:
+      - "8095:80"
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Server-Side Request Forgery (SSRF) vulnerable app
+  ssrf:
+    image: payload/ssrf
+    container_name: ssrf_vulnerable
+    ports:
+      - "8096:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # VulnBank - Vulnerable banking application
+  vulnbank:
+    image: meritlabs/vulnbank
+    container_name: vulnbank
+    ports:
+      - "8097:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:vulnbank
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # VulnLab - Multiple vulnerabilities
+  vulnlab:
+    image: hysnsec/vulnlab
+    container_name: vulnlab
+    ports:
+      - "8098:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # OWASP WrongSecrets - Secrets management vulnerabilities
+  wrongsecrets:
+    image: OWASP/wrongsecrets:latest
+    container_name: owasp_wrongsecrets
+    ports:
+      - "8099:8080"
+    environment:
+      - CHALLENGE_11_PASSWORD=this_is_a_predefined_wrong_secret_please_do_not_share
+      - CHALLENGE_12_PASSWORD=this_is_also_a_predefined_wrong_secret_please_do_not_share
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Yrprey - Phishing and social engineering platform
+  yrprey:
+    image: innotelsec/yrprey
+    container_name: yrprey
+    ports:
+      - "8100:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Zero Health - Vulnerable healthcare application
+  zerohealth:
+    image: citizenstig/zerohealth
+    container_name: zero_health
+    ports:
+      - "8101:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== API VULNERABILITIES ====================
+
+  # Vulnerable REST API
+  vulnapi:
+    image: assetnote/vulnapi
+    container_name: vulnapi
+    ports:
+      - "8102:8000"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # DVWS - Damn Vulnerable Web Services
+  dvws:
+    image: cyberxsecurity/dvws
+    container_name: dvws
+    ports:
+      - "8103:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # Hackazon - Vulnerable e-commerce platform
+  hackazon:
+    image: threatresponse/hackazon
+    container_name: hackazon
+    ports:
+      - "8104:80"
+    environment:
+      - DB_HOST=db_hackazon
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=hackazon
+    volumes:
+      - hackazon_data:/var/www/html
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== CRYPTO & ENCODING VULNS ====================
+
+  # Padding Oracle Attack tool/vulnerable app
+  padding_oracle:
+    image: vulnhub/padding-oracle
+    container_name: padding_oracle
+    ports:
+      - "8105:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+  # ==================== BUSINESS LOGIC VULNS ====================
+
+  # Vulnerable shop for logic flaws
+  vulnshop:
+    image: mutzel-recipes/all-in-one-docker:vulnerable-shop
+    container_name: vulnshop
+    ports:
+      - "8106:80"
+    networks:
+      - hacking_lab
+    restart: unless-stopped
+
+networks:
+  hacking_lab:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.10.0/24
+
+volumes:
+  wordpress_data:
+  wp_db_data:
+  joomla_data:
+  joomla_db_data:
+  mysql_weak_data:
+  postgres_weak_data:
+  mongodb_data:
+  tomcat_data:
+  jenkins_data:
+  grafana_data:
+  linux_vuln_data:
+  dvwa_db_data:
+  hackazon_data:

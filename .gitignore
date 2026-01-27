@@ -1,0 +1,42 @@
+# Docker volumes and data
+docker-compose.override.yml
+.env
+.env.local
+
+# Docker volumes
+volumes/
+data/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Security files
+secrets/
+credentials/
+*.key
+*.pem
+*.cert
+
+# Attack notes (if sensitive)
+notes/
+scans/
+exploits/
+payloads/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+CLAUDE.md
