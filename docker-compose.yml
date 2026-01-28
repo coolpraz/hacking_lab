@@ -414,13 +414,12 @@ services:
 
   # Damn Vulnerable GraphQL Application
   dvga:
-    image: insticator/damn-vulnerable-graph-ql-app
+    image: dolevf/dvga:latest
     container_name: damn_vulnerable_graphql
     ports:
-      - "8092:5000"
+      - "8092:5013"
     environment:
-      - NODE_ENV=development
-      - DEBUG=dvga:*
+      - WEB_HOST=0.0.0.0
     networks:
       - hacking_lab
     restart: unless-stopped
