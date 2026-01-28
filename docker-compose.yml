@@ -526,14 +526,14 @@ services:
     restart: unless-stopped
 
   # Yrprey - Phishing and social engineering platform
-  yrprey:
-    image: innotelsec/yrprey
-    container_name: yrprey
-    ports:
-      - "8100:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # yrprey:
+  #   image: innotelsec/yrprey
+  #   container_name: yrprey
+  #   ports:
+  #     - "8100:80"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # Zero Health - Vulnerable healthcare application
   zerohealth:
