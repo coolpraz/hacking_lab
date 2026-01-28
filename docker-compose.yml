@@ -559,14 +559,14 @@ services:
   # ==================== API VULNERABILITIES ====================
 
   # Vulnerable REST API
-  vulnapi:
-    image: assetnote/vulnapi
-    container_name: vulnapi
-    ports:
-      - "8102:8000"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # vulnapi:
+  #   image: assetnote/vulnapi
+  #   container_name: vulnapi
+  #   ports:
+  #     - "8102:8000"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # DVWS - Damn Vulnerable Web Services
   dvws:
