@@ -173,7 +173,7 @@ services:
 
   # Telnet server (insecure protocol)
   telnet:
-    image: vulnerable/telnet
+    image: cureapp/os-telnetserver:latest
     container_name: telnet_vuln
     ports:
       - "2323:23"
