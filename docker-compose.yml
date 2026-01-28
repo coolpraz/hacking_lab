@@ -17,7 +17,7 @@ services:
 
   # WebGoat - Java-based web application security lessons
   webgoat:
-    image: webgoat/webgoat-v8
+    image: webgoat/webgoat
     container_name: webgoat
     ports:
       - "8081:8080"
@@ -404,7 +404,7 @@ services:
 
   # SQLi-Labs - SQL Injection practice platform
   sqli_labs:
-    image: c0debreaker/sqli-labs
+    image: acgpiano/sqli-labs:latest
     container_name: sqli_labs
     ports:
       - "8091:80"
