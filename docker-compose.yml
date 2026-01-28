@@ -142,7 +142,7 @@ services:
 
   # VSFTPD - Vulnerable FTP server (2.3.4 - backdoor)
   vsftpd:
-    image: vulnerabilities/vsftpd
+    image: clintmint/vsftpd-2.3.4
     container_name: vsftpd_vuln
     ports:
       - "21:21"
@@ -152,21 +152,27 @@ services:
     restart: unless-stopped
 
   # ProFTPD - Vulnerable FTP server
-  proftpd:
-    image: vulnerabilities/proftpd
-    container_name: proftpd_vuln
-    ports:
-      - "2121:21"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # COMMENTED OUT: vulnerabilities/proftpd image not found on Docker Hub
+  # Alternative: Use instantlinux/proftpd with weak config for practice
+  # proftpd:
+  #   image: vulnerabilities/proftpd
+  #   container_name: proftpd_vuln
+  #   ports:
+  #     - "2121:21"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
-  # VSFTPD with configuration issues
+  # Pure-FTPd with weak authentication
   pure-ftpd:
-    image: vulnerabilities/pure-ftpd
+    image: stilliard/pure-ftpd
     container_name: pure_ftpd_vuln
     ports:
       - "2221:21"
+    environment:
+      - FTP_USER_NAME=testuser
+      - FTP_USER_PASS=testpass
+      - FTP_USER_HOME=/home/testuser
     networks:
       - hacking_lab
     restart: unless-stopped
@@ -184,14 +190,16 @@ services:
   # ==================== SSH & REMOTE ACCESS ====================
 
   # SSH with weak configurations
-  ssh_weak:
-    image: vulnerabilities/ssh
-    container_name: ssh_weak
-    ports:
-      - "2222:22"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # COMMENTED OUT: vulnerabilities/ssh image not found on Docker Hub
+  # Alternative: Use linuxserver/openssh-server with weak config, or practice against telnet_vuln
+  # ssh_weak:
+  #   image: vulnerabilities/ssh
+  #   container_name: ssh_weak
+  #   ports:
+  #     - "2222:22"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # ==================== DATABASE SERVICES ====================
 
@@ -244,9 +252,9 @@ services:
 
   # ==================== SMB & FILE SHARING ====================
 
-  # Samba with configuration vulnerabilities
+  # Samba with configuration vulnerabilities (CVE-2017-7494 SambaCry)
   samba:
-    image: vulnerabilities/samba
+    image: vulnerables/cve-2017-7494
     container_name: samba_vuln
     ports:
       - "139:139"
@@ -258,15 +266,17 @@ services:
   # ==================== EMAIL SERVICES ====================
 
   # Vulnerable SMTP server
-  smtp:
-    image: vulnerabilities/smtp
-    container_name: smtp_vuln
-    ports:
-      - "25:25"
-      - "587:587"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # COMMENTED OUT: vulnerabilities/smtp image not found on Docker Hub
+  # Alternative: Use mailhog/mailhog for email testing (but not vulnerable)
+  # smtp:
+  #   image: vulnerabilities/smtp
+  #   container_name: smtp_vuln
+  #   ports:
+  #     - "25:25"
+  #     - "587:587"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # ==================== ADDITIONAL VULNERABLE SERVICES ====================
 
@@ -338,14 +348,16 @@ services:
     restart: unless-stopped
 
   # Apache Struts 2 (vulnerable to RCE)
-  struts2:
-    image: vulnerabilities/struts2
-    container_name: struts2_vuln
-    ports:
-      - "8088:8080"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # COMMENTED OUT: vulnerabilities/struts2 image not found on Docker Hub
+  # Alternative: Build custom image or use vulhub/struts2:CVE-2017-5638
+  # struts2:
+  #   image: vulnerabilities/struts2
+  #   container_name: struts2_vuln
+  #   ports:
+  #     - "8088:8080"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # ==================== CUSTOM VULNERABLE MACHINES ====================
 
