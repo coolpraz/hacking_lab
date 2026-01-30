@@ -98,8 +98,10 @@ services:
   # ==================== NETWORK SERVICES ====================
 
   # VSFTPD - Vulnerable FTP server (2.3.4 - backdoor)
+  # NOTE: Original image (clintmint/vsftpd-2.3.4) no longer available
+  # Alternative image with the same vulnerability
   vsftpd:
-    image: clintmint/vsftpd-2.3.4
+    image: sayers3/vsftpd.2.3.4:latest
     container_name: vsftpd_vuln
     ports:
       - "21:21"
@@ -109,8 +111,10 @@ services:
     restart: unless-stopped
 
   # Telnet server (insecure protocol)
+  # NOTE: Original image (cureapp/os-telnetserver) no longer available
+  # Alternative telnet server for practice
   telnet:
-    image: cureapp/os-telnetserver:latest
+    image: jaredharringtongibbs/telnet-server:latest
     container_name: telnet_vuln
     ports:
       - "2323:23"
@@ -303,18 +307,22 @@ services:
     restart: unless-stopped
 
   # Pixi - Vulnerable XSS application
-  pixi:
-    image: pykse/pixi
-    container_name: pixi_xss
-    ports:
-      - "8094:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # NOTE: Original image (pykse/pixi) no longer available
+  # COMMENTED OUT: XSS practice is available in OWASP Juice Shop (port 3000)
+  # pixi:
+  #   image: pykse/pixi
+  #   container_name: pixi_xss
+  #   ports:
+  #     - "8094:80"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # PyGoat - Python vulnerabilities
+  # NOTE: Original image (d1rkx/pygoat) no longer available
+  # Using alternative PyGoat image
   pygoat:
-    image: d1rkx/pygoat
+    image: pygoat/pygoat:latest
     container_name: pygoat
     ports:
       - "8095:80"
@@ -325,14 +333,17 @@ services:
     restart: unless-stopped
 
   # Server-Side Request Forgery (SSRF) vulnerable app
-  ssrf:
-    image: payload/ssrf
-    container_name: ssrf_vulnerable
-    ports:
-      - "8096:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # NOTE: Original image (payload/ssrf) no longer available
+  # COMMENTED OUT: No working alternative found on Docker Hub
+  # Alternative: Build from https://github.com/incredibleindishell/SSRF_Vulnerable_Lab
+  # ssrf:
+  #   image: payload/ssrf
+  #   container_name: ssrf_vulnerable
+  #   ports:
+  #     - "8096:80"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # OWASP WrongSecrets - Secrets management vulnerabilities
   wrongsecrets:
@@ -348,31 +359,36 @@ services:
     restart: unless-stopped
 
   # Hackazon - Vulnerable e-commerce platform
-  hackazon:
-    image: threatresponse/hackazon
-    container_name: hackazon
-    ports:
-      - "8104:80"
-    environment:
-      - DB_HOST=db_hackazon
-      - DB_USER=root
-      - DB_PASSWORD=root
-      - DB_NAME=hackazon
-    volumes:
-      - hackazon_data:/var/www/html
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # NOTE: Original image (threatresponse/hackazon) no longer available
+  # COMMENTED OUT: No working alternative found on Docker Hub
+  # hackazon:
+  #   image: threatresponse/hackazon
+  #   container_name: hackazon
+  #   ports:
+  #     - "8104:80"
+  #   environment:
+  #     - DB_HOST=db_hackazon
+  #     - DB_USER=root
+  #     - DB_PASSWORD=root
+  #     - DB_NAME=hackazon
+  #   volumes:
+  #     - hackazon_data:/var/www/html
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
   # Vulnerable shop for business logic flaws
-  vulnshop:
-    image: mutzel-recipes/all-in-one-docker:vulnerable-shop
-    container_name: vulnshop
-    ports:
-      - "8106:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # NOTE: Original image (mutzel-recipes/all-in-one-docker:vulnerable-shop) no longer available
+  # COMMENTED OUT: No working alternative found on Docker Hub
+  # Alternative: Business logic flaws can be practiced in Damn Vulnerable RESTaurant API (port 8093)
+  # vulnshop:
+  #   image: mutzel-recipes/all-in-one-docker:vulnerable-shop
+  #   container_name: vulnshop
+  #   ports:
+  #     - "8106:80"
+  #   networks:
+  #     - hacking_lab
+  #   restart: unless-stopped
 
 networks:
   hacking_lab:
@@ -390,5 +406,5 @@ volumes:
   mongodb_data:
   jenkins_data:
   dvwa_db_data:
-  hackazon_data:
+  # hackazon_data:  # Removed - service commented out
   dv_restaurant_db_data:
