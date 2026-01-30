@@ -50,16 +50,6 @@ services:
       - hacking_lab
     restart: unless-stopped
 
-  # Mutillidae - OWASP vulnerabilities
-  mutillidae:
-    image: citizenstig/dvwa
-    container_name: mutillidae
-    ports:
-      - "8083:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
   # Juice Shop - OWASP vulnerable Node.js app
   juice-shop:
     image: bkimminich/juice-shop
@@ -105,39 +95,6 @@ services:
       - hacking_lab
     restart: unless-stopped
 
-  # Joomla with vulnerabilities
-  joomla:
-    image: joomla:3.10-php7.4-apache
-    container_name: joomla_vuln
-    ports:
-      - "8085:80"
-    environment:
-      - JOOMLA_DB_HOST=joomla_db
-      - JOOMLA_DB_USER=joomla
-      - JOOMLA_DB_PASSWORD=joomla
-      - JOOMLA_DB_NAME=joomla
-    volumes:
-      - joomla_data:/var/www/html
-    networks:
-      - hacking_lab
-    depends_on:
-      - joomla_db
-    restart: unless-stopped
-
-  joomla_db:
-    image: mysql:5.7
-    container_name: joomla_db
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=joomla
-      - MYSQL_USER=joomla
-      - MYSQL_PASSWORD=joomla
-    volumes:
-      - joomla_db_data:/var/lib/mysql
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
   # ==================== NETWORK SERVICES ====================
 
   # VSFTPD - Vulnerable FTP server (2.3.4 - backdoor)
@@ -151,32 +108,6 @@ services:
       - hacking_lab
     restart: unless-stopped
 
-  # ProFTPD - Vulnerable FTP server
-  # COMMENTED OUT: vulnerabilities/proftpd image not found on Docker Hub
-  # Alternative: Use instantlinux/proftpd with weak config for practice
-  # proftpd:
-  #   image: vulnerabilities/proftpd
-  #   container_name: proftpd_vuln
-  #   ports:
-  #     - "2121:21"
-  #   networks:
-  #     - hacking_lab
-  #   restart: unless-stopped
-
-  # Pure-FTPd with weak authentication
-  pure-ftpd:
-    image: stilliard/pure-ftpd
-    container_name: pure_ftpd_vuln
-    ports:
-      - "2221:21"
-    environment:
-      - FTP_USER_NAME=testuser
-      - FTP_USER_PASS=testpass
-      - FTP_USER_HOME=/home/testuser
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
   # Telnet server (insecure protocol)
   telnet:
     image: cureapp/os-telnetserver:latest
@@ -186,20 +117,6 @@ services:
     networks:
       - hacking_lab
     restart: unless-stopped
-
-  # ==================== SSH & REMOTE ACCESS ====================
-
-  # SSH with weak configurations
-  # COMMENTED OUT: vulnerabilities/ssh image not found on Docker Hub
-  # Alternative: Use linuxserver/openssh-server with weak config, or practice against telnet_vuln
-  # ssh_weak:
-  #   image: vulnerabilities/ssh
-  #   container_name: ssh_weak
-  #   ports:
-  #     - "2222:22"
-  #   networks:
-  #     - hacking_lab
-  #   restart: unless-stopped
 
   # ==================== DATABASE SERVICES ====================
 
@@ -278,19 +195,7 @@ services:
   #     - hacking_lab
   #   restart: unless-stopped
 
-  # ==================== ADDITIONAL VULNERABLE SERVICES ====================
-
-  # Tomcat with manager access
-  tomcat:
-    image: tomcat:8.5-jdk8-openjdk
-    container_name: tomcat_vuln
-    ports:
-      - "8086:8080"
-    volumes:
-      - tomcat_data:/usr/local/tomcat/webapps
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # ==================== DEVSECOPS ====================
 
   # Jenkins with default credentials
   jenkins:
@@ -317,64 +222,6 @@ services:
       - hacking_lab
     restart: unless-stopped
 
-  # ElasticSearch with default settings
-  elasticsearch:
-    image: elasticsearch:7.10.0
-    container_name: elasticsearch_vuln
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
-  # Grafana with default credentials
-  grafana:
-    image: grafana/grafana:7.5.0
-    container_name: grafana_vuln
-    ports:
-      - "3001:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_INSTALL_PLUGINS=grafana-clock-panel
-    volumes:
-      - grafana_data:/var/lib/grafana
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
-  # Apache Struts 2 (vulnerable to RCE)
-  # COMMENTED OUT: vulnerabilities/struts2 image not found on Docker Hub
-  # Alternative: Build custom image or use vulhub/struts2:CVE-2017-5638
-  # struts2:
-  #   image: vulnerabilities/struts2
-  #   container_name: struts2_vuln
-  #   ports:
-  #     - "8088:8080"
-  #   networks:
-  #     - hacking_lab
-  #   restart: unless-stopped
-
-  # ==================== CUSTOM VULNERABLE MACHINES ====================
-
-  # Custom Linux box with multiple vulnerabilities
-  linux_vuln_box:
-    image: kalilinux/kali-rolling:latest
-    container_name: linux_vuln_box
-    ports:
-      - "2223:22"
-      - "8089:80"
-    volumes:
-      - linux_vuln_data:/root
-    networks:
-      - hacking_lab
-    command: /bin/bash -c "apt-get update && apt-get install -y openssh-server apache2 mysql-server && service ssh start && service apache2 start && tail -f /dev/null"
-    restart: unless-stopped
-
   # DVWA database
   db:
     image: mysql:5.7
@@ -390,17 +237,7 @@ services:
       - hacking_lab
     restart: unless-stopped
 
-  # ==================== ADDITIONAL OWASP VULNERABLE APPS ====================
-
-  # OWASP VulnerableApp - Comprehensive vulnerable application
-  vulnerableapp:
-    image: blabla1337/owasp-vulnerableapp
-    container_name: owasp_vulnerableapp
-    ports:
-      - "8090:8080"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
+  # ==================== SPECIALIZED VULNERABLE APPS ====================
 
   # SQLi-Labs - SQL Injection practice platform
   sqli_labs:
@@ -497,32 +334,6 @@ services:
       - hacking_lab
     restart: unless-stopped
 
-  # VulnBank - Vulnerable banking application
-  vulnbank:
-    image: meritlabs/vulnbank
-    container_name: vulnbank
-    ports:
-      - "8097:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:vulnbank
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
-  # VulnLab - Multiple vulnerabilities
-  vulnlab:
-    image: hysnsec/vulnlab
-    container_name: vulnlab
-    ports:
-      - "8098:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
   # OWASP WrongSecrets - Secrets management vulnerabilities
   wrongsecrets:
     image: ghcr.io/owasp/wrongsecrets/wrongsecrets-master:latest-master
@@ -532,48 +343,6 @@ services:
     environment:
       - CHALLENGE_11_PASSWORD=this_is_a_predefined_wrong_secret_please_do_not_share
       - CHALLENGE_12_PASSWORD=this_is_also_a_predefined_wrong_secret_please_do_not_share
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
-  # Yrprey - Phishing and social engineering platform
-  # yrprey:
-  #   image: innotelsec/yrprey
-  #   container_name: yrprey
-  #   ports:
-  #     - "8100:80"
-  #   networks:
-  #     - hacking_lab
-  #   restart: unless-stopped
-
-  # Zero Health - Vulnerable healthcare application
-  zerohealth:
-    image: citizenstig/zerohealth
-    container_name: zero_health
-    ports:
-      - "8101:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
-  # ==================== API VULNERABILITIES ====================
-
-  # Vulnerable REST API
-  # vulnapi:
-  #   image: assetnote/vulnapi
-  #   container_name: vulnapi
-  #   ports:
-  #     - "8102:8000"
-  #   networks:
-  #     - hacking_lab
-  #   restart: unless-stopped
-
-  # DVWS - Damn Vulnerable Web Services
-  dvws:
-    image: cyberxsecurity/dvws
-    container_name: dvws
-    ports:
-      - "8103:80"
     networks:
       - hacking_lab
     restart: unless-stopped
@@ -595,21 +364,7 @@ services:
       - hacking_lab
     restart: unless-stopped
 
-  # ==================== CRYPTO & ENCODING VULNS ====================
-
-  # Padding Oracle Attack tool/vulnerable app
-  padding_oracle:
-    image: vulnhub/padding-oracle
-    container_name: padding_oracle
-    ports:
-      - "8105:80"
-    networks:
-      - hacking_lab
-    restart: unless-stopped
-
-  # ==================== BUSINESS LOGIC VULNS ====================
-
-  # Vulnerable shop for logic flaws
+  # Vulnerable shop for business logic flaws
   vulnshop:
     image: mutzel-recipes/all-in-one-docker:vulnerable-shop
     container_name: vulnshop
@@ -630,15 +385,10 @@ networks:
 volumes:
   wordpress_data:
   wp_db_data:
-  joomla_data:
-  joomla_db_data:
   mysql_weak_data:
   postgres_weak_data:
   mongodb_data:
-  tomcat_data:
   jenkins_data:
-  grafana_data:
-  linux_vuln_data:
   dvwa_db_data:
   hackazon_data:
   dv_restaurant_db_data:
