@@ -188,7 +188,7 @@ show_credentials() {
 
 network_scan() {
     print_warning "Scanning Docker network for running services..."
-    docker network inspect hacking_lab_hacking_lab | grep -A 10 "Containers"
+    docker network inspect kasm_default_network | grep -A 10 "Containers"
 }
 
 check_requirements() {
