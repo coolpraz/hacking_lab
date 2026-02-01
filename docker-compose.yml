@@ -12,7 +12,7 @@ services:
     environment:
       - DB_SERVER=db
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # WebGoat - Java-based web application security lessons
@@ -22,7 +22,7 @@ services:
     ports:
       - "8081:8080"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # WebWolf - WebGoat's companion
@@ -32,7 +32,7 @@ services:
     ports:
       - "9090:9090"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # bWAPP - buggy Web Application
@@ -47,7 +47,7 @@ services:
       - MYSQL_USER=bug
       - MYSQL_PASSWORD=bug
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Juice Shop - OWASP vulnerable Node.js app
@@ -57,7 +57,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # ==================== CMS VULNERABILITIES ====================
@@ -76,7 +76,7 @@ services:
     volumes:
       - wordpress_data:/var/www/html
     networks:
-      - hacking_lab
+      - kasm_default_network
     depends_on:
       - wp_db
     restart: unless-stopped
@@ -92,7 +92,7 @@ services:
     volumes:
       - wp_db_data:/var/lib/mysql
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # ==================== NETWORK SERVICES ====================
@@ -107,7 +107,7 @@ services:
       - "21:21"
       - "20:20"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Telnet server (insecure protocol)
@@ -119,7 +119,7 @@ services:
     ports:
       - "2323:23"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # ==================== DATABASE SERVICES ====================
@@ -138,7 +138,7 @@ services:
     volumes:
       - mysql_weak_data:/var/lib/mysql
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # PostgreSQL with weak credentials
@@ -154,7 +154,7 @@ services:
     volumes:
       - postgres_weak_data:/var/lib/postgresql/data
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # MongoDB with no auth
@@ -168,7 +168,7 @@ services:
     volumes:
       - mongodb_data:/data/db
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # ==================== SMB & FILE SHARING ====================
@@ -181,7 +181,7 @@ services:
       - "139:139"
       - "445:445"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # ==================== EMAIL SERVICES ====================
@@ -196,7 +196,7 @@ services:
   #     - "25:25"
   #     - "587:587"
   #   networks:
-  #     - hacking_lab
+  #     - kasm_default_network
   #   restart: unless-stopped
 
   # ==================== DEVSECOPS ====================
@@ -213,7 +213,7 @@ services:
     volumes:
       - jenkins_data:/var/jenkins_home
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Redis with no auth
@@ -223,7 +223,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # DVWA database
@@ -238,7 +238,7 @@ services:
     volumes:
       - dvwa_db_data:/var/lib/mysql
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # ==================== SPECIALIZED VULNERABLE APPS ====================
@@ -250,7 +250,7 @@ services:
     ports:
       - "8091:80"
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Damn Vulnerable GraphQL Application
@@ -262,7 +262,7 @@ services:
     environment:
       - WEB_HOST=0.0.0.0
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Damn Vulnerable RESTaurant API
@@ -282,7 +282,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_DB=restaurant
     networks:
-      - hacking_lab
+      - kasm_default_network
     depends_on:
       dv_restaurant_db:
         condition: service_healthy
@@ -303,7 +303,7 @@ services:
       interval: 5s
       start_period: 5s
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Pixi - Vulnerable XSS application
@@ -315,7 +315,7 @@ services:
   #   ports:
   #     - "8094:80"
   #   networks:
-  #     - hacking_lab
+  #     - kasm_default_network
   #   restart: unless-stopped
 
   # PyGoat - Python vulnerabilities
@@ -329,7 +329,7 @@ services:
     environment:
       - FLASK_ENV=development
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Server-Side Request Forgery (SSRF) vulnerable app
@@ -342,7 +342,7 @@ services:
   #   ports:
   #     - "8096:80"
   #   networks:
-  #     - hacking_lab
+  #     - kasm_default_network
   #   restart: unless-stopped
 
   # OWASP WrongSecrets - Secrets management vulnerabilities
@@ -355,7 +355,7 @@ services:
       - CHALLENGE_11_PASSWORD=this_is_a_predefined_wrong_secret_please_do_not_share
       - CHALLENGE_12_PASSWORD=this_is_also_a_predefined_wrong_secret_please_do_not_share
     networks:
-      - hacking_lab
+      - kasm_default_network
     restart: unless-stopped
 
   # Hackazon - Vulnerable e-commerce platform
@@ -374,7 +374,7 @@ services:
   #   volumes:
   #     - hackazon_data:/var/www/html
   #   networks:
-  #     - hacking_lab
+  #     - kasm_default_network
   #   restart: unless-stopped
 
   # Vulnerable shop for business logic flaws
@@ -387,16 +387,8 @@ services:
   #   ports:
   #     - "8106:80"
   #   networks:
-  #     - hacking_lab
+  #     - kasm_default_network
   #   restart: unless-stopped
-
-networks:
-  hacking_lab:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.10.10.0/24
 
 volumes:
   wordpress_data:
