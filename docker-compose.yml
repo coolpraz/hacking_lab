@@ -390,6 +390,9 @@ services:
   #     - kasm_default_network
   #   restart: unless-stopped
 
+networks:
+  kasm_default_network:
+
 volumes:
   wordpress_data:
   wp_db_data:
